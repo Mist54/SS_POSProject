@@ -5,31 +5,76 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace SSPOS.DL
 {
     public class DbConnetions
     {
-        private string connectionString;
-        public DbConnetions()
+        /// <summary>
+        /// Gets the connection string from the App.config file 
+        /// </summary>
+        /// <returns></returns>
+        public static string GetConnectionString()
         {
-            connectionString = ConfigurationManager.ConnectionStrings["MyDbConnection"].ConnectionString;
-        }
-
-        public SqlConnection GetSqlConnection()
-        {
-            SqlConnection connection = new SqlConnection(connectionString);
             try
             {
-                connection.Open();
+                string connectionString = ConfigurationManager.ConnectionStrings["MyDbConnection"].ConnectionString;
+
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    return connectionString;
+                }
             }
             catch (Exception ex)
             {
-                // Handle any exceptions
-                connection.Dispose();
-                throw ex; // Re-throw the exception after handling
+                throw ex;
             }
-            return connection;
         }
+
+
+        /// <summary>
+        /// Retrive all the Data from Product table 
+        /// </summary>
+        /// <returns></returns>
+        public static DataTable RetrieveAllProducts()
+        {
+            string connectionString = GetConnectionString();
+
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("Product_RetriveAll", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    DataTable dataTable = new DataTable();
+                    _ = adapter.Fill(dataTable);
+
+                    // Check if DataTable has rows
+                    if (dataTable.Rows.Count == 0)
+                    {
+                        throw new Exception("No data returned from the stored procedure.");
+                    }
+
+                    return dataTable;
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine("SQL Exception: " + sqlEx.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+                throw;
+            }
+        }
+
+
     }
+
 }

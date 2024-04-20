@@ -1,0 +1,55 @@
+-- Create Database
+CREATE DATABASE SSPOS
+GO
+
+-- Switch to the new database
+USE SSPOS
+GO
+
+-- Create SQL Authentication Login
+CREATE LOGIN SSPOS_Admin WITH PASSWORD = 'SSPOS-Admin@123'
+GO
+
+-- Create User in the database
+CREATE USER SSPOS_Admin FOR LOGIN SSPOS_Admin
+GO
+
+-- Grant necessary permissions (e.g., db_owner role)
+EXEC sp_addrolemember 'db_owner', 'SSPOS_Admin'
+GO
+
+
+CREATE TABLE Product (
+    ProductID INT PRIMARY KEY IDENTITY(1,1),
+    Name VARCHAR(255) NOT NULL,
+    Code INT NOT NULL,
+    UOM VARCHAR(50) NOT NULL,
+    Price DECIMAL(10,2) NOT NULL,
+    ProductType VARCHAR(50) NOT NULL,
+    Loose BIT NOT NULL,
+    Category VARCHAR(20) NOT NULL,
+    Subcategory VARCHAR(20) NOT NULL,
+    RegularPrice DECIMAL(10,2) NOT NULL,
+    DirectPrice DECIMAL(10,2) NOT NULL,
+    OutsidePrice DECIMAL(10,2) NOT NULL,
+    CreatedBy VARCHAR(100),
+    CreatedDate DATETIME DEFAULT GETDATE(),
+    ModifiedBy VARCHAR(100),
+    ModifiedDate DATETIME DEFAULT GETDATE(),
+    IsDeleted BIT DEFAULT 0
+);
+
+
+
+CREATE PROCEDURE Product_RetriveAll
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Select necessary columns
+    SELECT ProductID, Name, Code, UOM, Price, ProductType, Loose, Category, Subcategory, 
+           RegularPrice, DirectPrice, OutsidePrice, CreatedDate, ModifiedDate
+    FROM Product;
+END;
+
+

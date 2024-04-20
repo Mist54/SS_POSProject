@@ -3,3 +3,11 @@ SSPOS Pre-Requisities :
 Framework :4.7.2
 Design FrameWork : MahApps.Metro 
 Resource Files : https://mahapps.com/docs/styles/buttons
+
+
+---------------------------------------------------------
+Database Cred:
+Username SSPOS-Admin
+Password SSPOS-Admin@123
+
+Connection String : Data Source=localhost;Database=SSPOS;User Id=SSPOS-Admin;Password=SSPOS-Admin;
