@@ -45,18 +45,16 @@
                 <TextBlock Text="Section : " Style="{DynamicResource MahApps.Styles.TextBlock}" Margin="10,0,0,0" FontSize="15"></TextBlock>
                 <ComboBox Name="SectionType" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
                           Style="{DynamicResource MahApps.Styles.ComboBox}" MinWidth="200" Margin="10,0,0,0" FontSize="15">
-                    <ComboBoxItem Content="Item 1"/>
-                    <ComboBoxItem Content="Item 2"/>
-                    <ComboBoxItem Content="Item 3"/>
+                    <ComboBoxItem Content="Regular"/>
+                    <ComboBoxItem Content="Outside"/>
+                    <ComboBoxItem Content="Other"/>
                 </ComboBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0,20,0,0">
                 <TextBlock Text="Table number : " Margin="0,0,0,0" FontSize="15"></TextBlock>
-                <ComboBox Name="dropdownTableType" HorizontalAlignment="Left" VerticalAlignment="Center"
-                       Style="{DynamicResource MahApps.Styles.ComboBox}" Width="150" Margin="8,0,0,0">
-                    <ComboBoxItem Content="Item 1"/>
-                    <ComboBoxItem Content="Item 2"/>
-                    <ComboBoxItem Content="Item 3"/>
+                <ComboBox Name="dropdownTableType" HorizontalAlignment="Left" VerticalAlignment="Center" MinWidth="150" Margin="9,0,0,0"
+                          Style="{DynamicResource MahApps.Styles.ComboBox}"
+                          MaxDropDownHeight="90">
                 </ComboBox>
                 <TextBlock Text="Waiter : " Margin="15,0,10,0" FontSize="15"></TextBlock>
                 <ComboBox Name="dropdownWaiterType" HorizontalAlignment="Left" VerticalAlignment="Center"
@@ -70,7 +68,8 @@
             <StackPanel Orientation="Horizontal" Margin="0,35,0,0">
                 <Label Content="Item Code :" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15" />
                 <TextBox Name="txtCode"  HorizontalAlignment="Left" VerticalAlignment="Center"
-                     Style="{DynamicResource MahApps.Styles.TextBox}" Width="150" Margin="25,0,0,0" PreviewTextInput="txtCode_PreviewTextInput" />
+                     Style="{DynamicResource MahApps.Styles.TextBox}" Width="150" Margin="25,0,0,0" PreviewTextInput="txtCode_PreviewTextInput" 
+                         TextChanged="txtCode_TextChanged"/>
                 <Label Content="Qty:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="22,0,0,0"/>
                 <TextBox Name="txtQty" HorizontalAlignment="Left" VerticalAlignment="Center"
                      Style="{DynamicResource MahApps.Styles.TextBox}" Width="200" Margin="25,0,0,0" PreviewTextInput="txtQty_PreviewTextInput"/>
@@ -128,9 +127,9 @@
                           ScrollViewer.VerticalScrollBarVisibility="Auto" IsReadOnly="True" 
                           PreviewKeyDown="ItemListGrid_PreviewKeyDown" SelectionChanged="ItemListGrid_SelectionChanged">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Item Name" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Item Code" Binding="{Binding Code}" Width="*"/>
+                        <DataGridTextColumn Header="Item name" Binding="{Binding Name}" Width="*"/>
                         <DataGridTextColumn Header="Unit" Binding="{Binding UOM}" Width="*"/>
-                        <DataGridTextColumn Header="Code" Binding="{Binding Code}" Width="*"/>
                         <DataGridTextColumn Header="Price" Binding="{Binding Price}" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>

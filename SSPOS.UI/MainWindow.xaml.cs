@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using System;
+using System.Windows.Controls;
+using System.Collections.ObjectModel;
 
 namespace SSPOS.UI
 {
@@ -15,10 +17,12 @@ namespace SSPOS.UI
     public partial class MainWindow : MetroWindow
     {
         public string SearchStorage = "";
+        
         public MainWindow()
         {
             InitializeComponent();
             BindItemListGrid();
+            getTableNames();
         }
 
         private static List<GetAllProduct> RetriveAllProducts()
@@ -28,7 +32,7 @@ namespace SSPOS.UI
                 List<GetAllProduct> ProductList = new List<GetAllProduct>();
 
                 DataTable productTable = DbAcess.RetriveAllProducts();
-                foreach(DataRow row in productTable.Rows)
+                foreach (DataRow row in productTable.Rows)
                 {
                     GetAllProduct getAllProduct = new GetAllProduct();
                     getAllProduct.ProductID = Convert.ToInt32(row["ProductID"]);
@@ -72,26 +76,43 @@ namespace SSPOS.UI
 
         private void ItemListGrid_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            if(e.Key == System.Windows.Input.Key.F6)
+            {
+                SearchStorage = "";
+            }
             string pressedKey = e.Key.ToString().ToLower().Trim();
             SearchStorage += pressedKey;
-            ItemListGrid.Items.Clear();//Clears the Previous records 
+            int selectedIndex = 0;
+            bool flag = false;
             List<GetAllProduct> ProductList = RetriveAllProducts();
             // Filter ProductList based on pressedKey with case sensitivity on the Name property only
-            ProductList = ProductList.Where(product =>product.Name.ToLower().StartsWith(SearchStorage.ToLower())).ToList();
-            if (ProductList != null && ProductList.Count != 0)
+            List<GetAllProduct> filteredProducts = ProductList.Where(product => product.Name.ToLower().StartsWith(SearchStorage.ToLower())).ToList();
+            if (filteredProducts != null && filteredProducts.Count != 0)
             {
                 foreach (GetAllProduct product in ProductList)
                 {
-                    ItemListGrid.Items.Add(product);
+                    foreach(GetAllProduct filteredProduct in filteredProducts)
+                    {
+                        if(product.Code == filteredProduct.Code)
+                        {
+                            ItemListGrid.SelectedIndex = selectedIndex;
+                            ItemListGrid.ScrollIntoView(ItemListGrid.Items[selectedIndex]);
+                            flag = true;
+                            break;
+                        }
+                       
+                    }
+                    if(flag == true)
+                    {
+                        break;
+                    }
+                    selectedIndex++;
+                    
                 }
-                ItemListGrid.Focus();
-                ItemListGrid.SelectedIndex = 0;
-                ItemListGrid.ScrollIntoView(ItemListGrid.Items[0]);
-
+               
             }
             else
             {
-                BindItemListGrid();
                 SearchStorage = "";
             }
 
@@ -104,26 +125,81 @@ namespace SSPOS.UI
                 GetAllProduct selectedProduct = (GetAllProduct)ItemListGrid.SelectedItem;
                 txtCode.Text = selectedProduct.Code.ToString().Trim();
                 txtQty.Text = "1";
-                
+
             }
         }
 
-        
+
 
         private void txtQty_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
-        {
-            if (!char.IsDigit(e.Text, 0))
-            {
-                e.Handled = true; 
-            }
-        }
-
-        private void txtCode_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             if (!char.IsDigit(e.Text, 0))
             {
                 e.Handled = true;
             }
         }
+
+        private void txtCode_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            if (!int.TryParse(e.Text, out _))
+            {
+                e.Handled = true;
+            }
+
+
+
+        }
+
+        private void txtCode_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtCode.Text))
+            {
+                int selectedIndex = 0;
+                bool flag = false;
+                List<GetAllProduct> ProductList = RetriveAllProducts();
+                // Filter ProductList based on pressedKey with case sensitivity on the Name property only
+                List<GetAllProduct> filteredProducts = ProductList.Where(product => product.Code == Convert.ToInt32(txtCode.Text)).ToList();
+                if (filteredProducts != null && filteredProducts.Count != 0)
+                {
+                    foreach (GetAllProduct product in ProductList)
+                    {
+                        foreach (GetAllProduct filteredProduct in filteredProducts)
+                        {
+                            if (product.Code == filteredProduct.Code)
+                            {
+                                ItemListGrid.SelectedIndex = selectedIndex;
+                                ItemListGrid.ScrollIntoView(ItemListGrid.Items[selectedIndex]);
+                                flag = true;
+                                break;
+                            }
+
+                        }
+                        if (flag == true)
+                        {
+                            break;
+                        }
+                        selectedIndex++;
+
+                    }
+
+                }
+            }
+
+        }
+        private void getTableNames()
+        {
+            List<string> tableNameList = new List<string>
+            {
+                "1GA1", "1GA2", "1GA3", "1GA4", "1GA5","1GB1", "1GB2", "1GB3", "1GB4", "1GB5"
+
+
+            };
+            foreach (string tableName in tableNameList)
+            {
+                dropdownTableType.Items.Add(new ComboBoxItem { Content = tableName });
+            }
+
+        }
     }
 }
+
