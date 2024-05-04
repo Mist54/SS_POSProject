@@ -74,6 +74,46 @@ namespace SSPOS.DL
             }
         }
 
+        /// <summary>
+        /// Retrives all the Table name from the TableList 
+        /// </summary>
+        /// <returns></returns>
+        public static DataTable RetrieveAllTableName()
+        {
+            string connectionString = GetConnectionString();
+
+            try
+            {
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("GetAllTableName", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    DataTable dataTable = new DataTable();
+                    _ = adapter.Fill(dataTable);
+
+                    // Check if DataTable has rows
+                    if (dataTable.Rows.Count == 0)
+                    {
+                        throw new Exception("No data returned from the stored procedure.");
+                    }
+
+                    return dataTable;
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                Console.WriteLine("SQL Exception: " + sqlEx.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+                throw;
+            }
+        }
+
 
     }
 

@@ -31,6 +31,30 @@ namespace SSPOS.BL
             }
         }
 
+        public static List<string> RetrieveAllTableName()
+        {
+            List<string> tableNames = new List<string>();
+            try
+            {
+                // Call the method to retrieve DataTable
+                DataTable dataTable = DbConnetions.RetrieveAllTableName();
+                // Extract table names from DataTable
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    // Assuming "Combination" is the column containing table names
+                    string tableName = row["TableName"].ToString();
+                    tableNames.Add(tableName);
+                }
+
+                return tableNames;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
     }
 
     public class GetAllProduct

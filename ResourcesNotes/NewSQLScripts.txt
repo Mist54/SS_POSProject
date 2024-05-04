@@ -53,3 +53,43 @@ BEGIN
 END;
 
 
+CREATE TABLE TableList (
+    TableID INT PRIMARY KEY,
+    TableName VARCHAR(50) NOT NULL,
+    Capacity INT DEFAULT 4,
+    TableType VARCHAR(50),
+    Position VARCHAR(50),
+    FloorOrSection VARCHAR(50),
+    Status VARCHAR(20),
+    Description VARCHAR(100),
+    ReservationID INT,
+    IsReserved BIT,
+    Notes VARCHAR(255),
+    CreatedBy VARCHAR(50),
+    CreatedDate DATETIME,
+    ModifiedBy VARCHAR(50),
+    ModifiedDate DATETIME,
+    IsDeleted BIT
+);
+
+INSERT INTO TableList (TableID, TableName, Capacity, TableType, Position, FloorOrSection, Status, Description, ReservationID, IsReserved, Notes, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, IsDeleted)
+VALUES
+    (1, 'G_Table101', 4, 'Dining', 'Window-side', 'Ground', 'Available', 'Window-side table with a view', NULL, 0, 'Table near the entrance', 'Admin', GETDATE(), NULL, NULL, NULL),
+    (2, 'F_Table102', 6, 'Conference', 'Terrace', 'First', 'Occupied', 'Large round table for meetings', 101, 1, 'Reserved for corporate event', 'Manager', GETDATE(), NULL, NULL, NULL),
+    (3, 'G_Table103', 2, 'Dining', 'Bar Area', 'Ground', 'Available', 'High-top table for couples', NULL, 0, 'Intimate seating arrangement', 'Admin', GETDATE(), NULL, NULL, NULL),
+    (4, 'F_Table104', 4, 'Dining', 'Corner', 'First', 'Available', 'Corner table with a cozy atmosphere', NULL, 0, 'Perfect for small gatherings', 'Admin', GETDATE(), NULL, NULL, NULL),
+    (5, 'S_Table105', 4, 'Dining', 'Main Hall', 'Second', 'Available', 'Central table in the main dining area', NULL, 0, 'Visible from all sides', 'Admin', GETDATE(), NULL, NULL, NULL),
+    (6, 'G_Table106', 6, 'Conference', 'Meeting Room', 'Ground', 'Available', 'Conference table with AV equipment', NULL, 0, 'Equipped with projector and sound system', 'Manager', GETDATE(), NULL, NULL, NULL),
+    (7, 'F_Table107', 2, 'Dining', 'Terrace', 'First', 'Available', 'Table with outdoor seating', NULL, 0, 'Great for enjoying the view', 'Admin', GETDATE(), NULL, NULL, NULL),
+    (8, 'S_Table108', 4, 'Dining', 'Main Hall', 'Second', 'Available', 'Spacious table in the main dining area', NULL, 0, 'Accommodates larger groups', 'Admin', GETDATE(), NULL, NULL, NULL),
+    (9, 'F_Table109', 4, 'Dining', 'Window-side', 'First', 'Available', 'Table by the window with natural light', NULL, 0, 'Ideal for romantic dinners', 'Admin', GETDATE(), NULL, NULL, NULL),
+    (10, 'G_Table110', 2, 'Dining', 'Corner', 'Ground', 'Available', 'Cozy corner table for two', NULL, 0, 'Private seating option', 'Admin', GETDATE(), NULL, NULL, NULL);
+
+
+
+CREATE PROCEDURE GetAllTableName
+AS
+BEGIN 
+	SELECT TableName FROM dbo.TableList;
+END;	
+

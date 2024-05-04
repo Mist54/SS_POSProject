@@ -8,6 +8,7 @@ using System.Data;
 using System;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
+using System.Timers;
 
 namespace SSPOS.UI
 {
@@ -16,12 +17,15 @@ namespace SSPOS.UI
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        //Public fields
         public string SearchStorage = "";
-        
+        public Timer  searchTimer;
+
+
         public MainWindow()
         {
             InitializeComponent();
-            BindItemListGrid();
+            BindItemListGrid(); //Binds the Item list Grid
             getTableNames();
         }
 
@@ -104,6 +108,7 @@ namespace SSPOS.UI
                     }
                     if(flag == true)
                     {
+                       
                         break;
                     }
                     selectedIndex++;
@@ -116,9 +121,24 @@ namespace SSPOS.UI
                 SearchStorage = "";
             }
 
+            // Set up timer to clear SearchStorage after 5 seconds
+            if (searchTimer != null)
+            {
+                searchTimer.Stop();
+                searchTimer.Dispose();
+            }
+
+            searchTimer = new System.Timers.Timer
+            {
+                Interval = 5000 // 5 seconds
+            };
+            searchTimer.Elapsed += (s, ev) => { SearchStorage = ""; };
+            searchTimer.AutoReset = false; // Only fire once
+            searchTimer.Enabled = true;
+
         }
 
-        private void ItemListGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void ItemListGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ItemListGrid.SelectedItem != null)
             {
@@ -188,17 +208,14 @@ namespace SSPOS.UI
         }
         private void getTableNames()
         {
-            List<string> tableNameList = new List<string>
+            List<string> tableNameList = DbAcess.RetrieveAllTableName();
+            if (tableNameList != null && tableNameList.Count > 0)
             {
-                "1GA1", "1GA2", "1GA3", "1GA4", "1GA5","1GB1", "1GB2", "1GB3", "1GB4", "1GB5"
-
-
-            };
-            foreach (string tableName in tableNameList)
-            {
-                dropdownTableType.Items.Add(new ComboBoxItem { Content = tableName });
+                foreach (string tableName in tableNameList)
+                {
+                    dropdownTableType.Items.Add(new ComboBoxItem { Content = tableName });
+                }
             }
-
         }
     }
 }
