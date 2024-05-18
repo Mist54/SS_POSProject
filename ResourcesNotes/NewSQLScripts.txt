@@ -53,6 +53,7 @@ BEGIN
 END;
 
 
+//SS-->18-05-2024 -New table Creation "TableList "
 CREATE TABLE TableList (
     TableID INT PRIMARY KEY,
     TableName VARCHAR(50) NOT NULL,
@@ -72,6 +73,8 @@ CREATE TABLE TableList (
     IsDeleted BIT
 );
 
+
+--Dummy record insertion //SS-->18-05-2024
 INSERT INTO TableList (TableID, TableName, Capacity, TableType, Position, FloorOrSection, Status, Description, ReservationID, IsReserved, Notes, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, IsDeleted)
 VALUES
     (1, 'G_Table101', 4, 'Dining', 'Window-side', 'Ground', 'Available', 'Window-side table with a view', NULL, 0, 'Table near the entrance', 'Admin', GETDATE(), NULL, NULL, NULL),
@@ -86,7 +89,7 @@ VALUES
     (10, 'G_Table110', 2, 'Dining', 'Corner', 'Ground', 'Available', 'Cozy corner table for two', NULL, 0, 'Private seating option', 'Admin', GETDATE(), NULL, NULL, NULL);
 
 
-
+--New Procedure for get all table list //SS-->18-5-2024
 CREATE PROCEDURE GetAllTableName
 AS
 BEGIN 
