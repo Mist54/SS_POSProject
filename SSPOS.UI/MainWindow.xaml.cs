@@ -9,6 +9,7 @@ using System;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
 using System.Timers;
+using System.Windows.Input;
 
 namespace SSPOS.UI
 {
@@ -19,7 +20,9 @@ namespace SSPOS.UI
     {
         //Public fields
         public string SearchStorage = "";
-        public Timer  searchTimer;
+        public Timer searchTimer;
+        public List<Order> orderList = new List<Order>();
+
 
 
         public MainWindow()
@@ -80,7 +83,7 @@ namespace SSPOS.UI
 
         private void ItemListGrid_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if(e.Key == System.Windows.Input.Key.F6)
+            if (e.Key == System.Windows.Input.Key.F6)
             {
                 SearchStorage = "";
             }
@@ -95,26 +98,26 @@ namespace SSPOS.UI
             {
                 foreach (GetAllProduct product in ProductList)
                 {
-                    foreach(GetAllProduct filteredProduct in filteredProducts)
+                    foreach (GetAllProduct filteredProduct in filteredProducts)
                     {
-                        if(product.Code == filteredProduct.Code)
+                        if (product.Code == filteredProduct.Code)
                         {
                             ItemListGrid.SelectedIndex = selectedIndex;
                             ItemListGrid.ScrollIntoView(ItemListGrid.Items[selectedIndex]);
                             flag = true;
                             break;
                         }
-                       
+
                     }
-                    if(flag == true)
+                    if (flag == true)
                     {
-                       
+
                         break;
                     }
                     selectedIndex++;
-                    
+
                 }
-               
+
             }
             else
             {
@@ -217,6 +220,67 @@ namespace SSPOS.UI
                 }
             }
         }
+
+        private void txtQty_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                string knotNumber = txtKnotNumber.Text.ToString();
+                string section = SectionType.Text.ToString();
+                string tableNumber = dropdownTableType.Text.ToString();
+                string waiterName = dropdownWaiterType.Text.ToString();
+                int itemCode = Convert.ToInt32(txtCode.Text);
+                int qty = Convert.ToInt32(txtQty.Text);
+                GetAllProduct selectedProduct = (GetAllProduct)ItemListGrid.SelectedItems[0];
+                string selectedItemName = selectedProduct.Name;
+
+                var existingOrder = orderList.FirstOrDefault(order =>
+                    order.knotNumber == knotNumber &&
+                    order.section == section &&
+                    order.Item == selectedItemName &&
+                    order.tableType == tableNumber &&
+                    order.waiterName == waiterName &&
+                    order.Code == itemCode
+                    );
+                if (existingOrder != null)
+                {
+                    // If the order exists, update the quantity
+                    existingOrder.Qty = qty;
+                }
+                else
+                {
+                    // If the order does not exist, create a new order item
+                    Order orderItem = new Order
+                    {
+                        knotNumber = knotNumber,
+                        section = section,
+                        Item = selectedItemName,
+                        tableType = tableNumber,
+                        waiterName = waiterName,
+                        Code = itemCode,
+                        Qty = qty
+                    };
+                    // Add the new orderItem to the orderList
+                    orderList.Add(orderItem);
+                }
+                // Populate the OrderListGrid
+                populateOrderListGrid();
+
+
+
+            }
+
+        }
+
+        private void populateOrderListGrid()
+        {
+            OrderListGrid.Items.Clear();
+            foreach (Order orders in orderList)
+            {
+                OrderListGrid.Items.Add(orders);
+            }
+        }
+
     }
 }
 
